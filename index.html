@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link rel="stylesheet" href="main.css" />
+    <script src="vue.min.js"></script>
+
+</head>
+<body>
+    <div class="wrapper flex">
+        <!--商品列表  -->
+        <div id="app">
+            <header>
+                <h1>商品列表</h1>
+            </header>
+            <div class="content">
+                <div class="nav_wrap">
+                    <ul class="nav_box">
+                        <li v-for="item in navList" 
+                            v-bind:class="{'active':navlistInit === item.id}" 
+                            @click="toggleNavList(item.id)">
+                            {{item.value}}
+                        </li>
+                    </ul>
+                </div>
+                <ul class="sortList">
+                    <li v-for="item in sortList"    
+                        v-bind:class="{'active':sortMethdsIndex === item.index}" 
+                        v-on:click="sortMethods(item)">
+                        {{item.value}}
+                    </li>
+                </ul>
+                <div class="goods_box">
+                    <ul class="goods_list">
+                        <li v-for="good in list">
+                            <div class="goods_item">
+                                <div class="goods_img">
+                                    <img v-bind:src="good.img" alt="" />
+                                </div>
+                                <div class="goods_info">
+                                    <p class="goods_name">{{ good.name }}</p>
+                                    <p class="goods_price">￥{{ good.price }}元</p>
+                                    <div class="menubox">
+                                        <span class="sale">{{ good.sales }}人付款</span>
+                                        <button class="btn_add" @click="addToCar(good)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!--购物车  -->
+        <div id="shoppingcar">
+            <h1>
+                购物订单<button class="btn_compile" v-if="btnCondition"                                 @click="btnCondition=!btnCondition">编辑</button>
+                <button class="btn_compile" v-else @click="finish()">完成</button>
+            </h1>
+            <div class="sortList">
+                <p v-if="!goodsInCar.length" class="empty_title">这里是空的，快去逛逛吧</p>
+                <ul v-else class="goodsInCar_box">
+                    <li v-for="(good,index) in goodsInCar" class="flex goodsInCar_list">
+                        <!-- <label class="flex"> -->
+                        <div class="checkbox flex">
+                            <input type="checkbox" name="" id="" v-model="good.checked" @click="checkGood()" />
+                        </div>
+                        <div class="goodsInCar_img flex">
+                            <img v-bind:src="good.img" alt="" />
+                        </div>
+                        <div class="goodsInCar_info flex">
+                            <p class="goodsInCar_name">{{ good.name }}</p>
+                            <p class="goodsInCar_price">￥ {{ good.price | totMoney}} 元</p>
+                            <p class="goodsInCar_stock">{{ good.stock }} 件</p>
+                        </div>
+                        <div class="changeNumber flex">
+                            <button @click="changeQuantity(good,1)">+</button>
+                            <span>{{ good.quantity }}</span>
+                            <button @click="changeQuantity(good,-1)">-</button>
+                        </div>
+                        <!-- </label> -->
+                    </li>
+                    
+                </ul>
+                <div class="float_column flex">  
+                    <div class="checkall_box flex">
+                        <div class="checkall_btn">
+                            <label>
+                                <input type="checkbox" name="" id="" v-model="checkAllBool" @click="checkAll"/>
+                                全选
+                            </label>
+                            
+                        </div>
+                        <div class="total_price" v-show="btnCondition">总计￥{{ allMoney | totMoney(allMoney) }}元</div>
+                    </div>
+                    <div class="pay_box" v-if="btnCondition">去结算({{ checkGoodNum }})</div>
+                    <div class="delete_box" v-else @click="delGood()" >删除({{ checkGoodNum }})</div>
+                </div> 
+            </div>
+            
+        </div>
+    </div>
+    <script src="main.js"></script>
+
+
+
+
+</body>
+</html>
